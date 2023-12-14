@@ -1,0 +1,29 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css");
+@import url("https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css");
+
+.t-capitalise{
+    text-transform: capitalize;
+}
+
+.mouse-cursor{
+    cursor: pointer;
+}
+
+.round-border{
+    border-radius: 10% !important;
+}
+
+
+.inputErrorAdmin{
+    color: red;
+    font-size: 10px;
+    margin-bottom: 27px;
+    text-decoration: underline;
+}
+
+.inputSuccessAdmin{
+    color: green;
+    font-size: 10px;
+    margin-bottom: 27px;
+    text-decoration: underline;
+}
