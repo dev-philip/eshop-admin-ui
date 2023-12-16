@@ -61,6 +61,13 @@ const SideBar = () => {
                         </li>
 
                         <li className="nav-item">
+                        <Link className="nav-link" href="/create-product">
+                            <span className="menu-title">Create Product</span>
+                            <i className="fa fa-plus-circle menu-icon" aria-hidden="true"></i>
+                        </Link>
+                        </li>
+
+                        <li className="nav-item">
                         <Link className="nav-link" href="/products">
                             <span className="menu-title">Products</span>
                             <i className="fa fa-product-hunt menu-icon" aria-hidden="true"></i>

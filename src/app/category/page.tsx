@@ -8,6 +8,7 @@ import "/public/assets/images/favicon.ico";
 import React, { useEffect, useState } from "react";
 import {isJwtTokenExpired, logout, getJwtTokenData, getJwtToken } from "../../utils/auth";
 import { useRouter } from "next/navigation";
+import Swal from 'sweetalert2'
 
 // redux files
 import { useSelector, useDispatch } from "react-redux";
@@ -28,7 +29,9 @@ import { Category } from "../../types/category";
 
 
 const validationSchema = Yup.object({
-    product_category: Yup.string().required('Product Category is required'),
+    product_category: Yup.string()
+        .required('Product Category is required')
+        .matches(/^[a-zA-Z0-9-_& ]+$/, 'Product Category can only contain alphabets, numbers, -, _, and &'),
 });
 
 const Category = () => {
@@ -186,36 +189,51 @@ const Category = () => {
         } 
       }
 
-    const deleteCategory = async (categoryId:string) => {
-            try {
-                setIsDeleting(true); // Set loading state to true
+      const deleteCategoryNow = async (categoryId:string) => {
+        try {
+            setIsDeleting(true); // Set loading state to true
 
-                const headers = {
-                    'Authorization': `Bearer ${getJwtToken()}`,
-                    'Content-Type': 'application/json',  // Adjust the content type based on your API requirements
-                  };
-                
-                const response = await axios.delete(baseUrl + `/admin/delete/category/${categoryId}`, {headers});
-
-                if(response.data){
-                    getProductCategory();
-                    toss.success("Category deleted successfully");
-
-                    // setRowClassName("animate__animated animate__fadeInUp");
-                    //  setTimeout(() => {
-                    //     setRowClassName("");
-                    // }, 2500);
-                }else{
-                    toss.error("Error getting category data on page load");
-                }
-
-            } catch (error) {
-                console.error('Error deleting category:', error);
-                // Handle error as needed
-            } finally {
-                setIsDeleting(false); // Reset loading state regardless of success or failure
-            }
+            const headers = {
+                'Authorization': `Bearer ${getJwtToken()}`,
+                'Content-Type': 'application/json',  // Adjust the content type based on your API requirements
+              };
             
+            const response = await axios.delete(baseUrl + `/admin/delete/category/${categoryId}`, {headers});
+
+            if(response.data){
+                getProductCategory();
+                toss.success("Category deleted successfully");
+
+                // setRowClassName("animate__animated animate__fadeInUp");
+                //  setTimeout(() => {
+                //     setRowClassName("");
+                // }, 2500);
+            }else{
+                toss.error("Error getting category data on page load");
+            }
+
+        } catch (error) {
+            console.error('Error deleting category:', error);
+            // Handle error as needed
+        } finally {
+            setIsDeleting(false); // Reset loading state regardless of success or failure
+        }
+
+      }
+      
+    const deleteCategory = (categoryId:string) => {
+        Swal.fire({
+            icon: "info",
+            title: "Do you want to make this change?",
+            showCancelButton: true,
+            confirmButtonText: "Confirm",
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                deleteCategoryNow(categoryId);
+                Swal.fire("Deleted!", "", "success");
+            } 
+          });   
            
     }
 
@@ -253,10 +271,10 @@ const Category = () => {
                         <div className="card">
                         <div className="card-body">
                             <h4 className="card-title">Add Categories</h4>
-                            <span className={isAdded ? ("inputErrorAdmin") : ("inputSuccessAdmin")}>
+                            <div className={isAdded ? ("inputErrorAdmin") : ("inputSuccessAdmin")}>
                                 {formik.touched.product_category && formik.errors.product_category}
                                 {responseMessage}
-                            </span>
+                            </div>
                             <form className="form-inline" onSubmit={formik.handleSubmit}>
                                 <div className="input-group mb-2 mr-sm-2">
                                     <div className="input-group-prepend">
@@ -298,10 +316,10 @@ const Category = () => {
                           <div className="card">
                           <div className="card-body">
                               <h4 className="card-title">Edit Categories</h4>
-                              <span className={isAdded ? ("inputErrorAdmin") : ("inputSuccessAdmin")}>
+                              <div className={isAdded ? ("inputErrorAdmin") : ("inputSuccessAdmin")}>
                                   {formikEdit.touched.product_category && formikEdit.errors.product_category}
                                   {responseMessage}
-                              </span>
+                              </div>
                               <form className="form-inline" onSubmit={formikEdit.handleSubmit}>
                                   <div className="input-group mb-2 mr-sm-2">
                                       <div className="input-group-prepend">
